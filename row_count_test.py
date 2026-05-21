@@ -4,7 +4,7 @@ import random
 
 def test_row_count():
     expected = random.randint(1, 100)
-    actual = random.randint(1, 100)
+    actual = random.randint(1, 90)
     assert expected == actual, f"Expected {expected}, got {actual}"
 
 if __name__ == "__main__":
