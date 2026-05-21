@@ -26,4 +26,4 @@ jobs:
 
     - name: Run Test Script
       run: |
-        python test_pipeline.py
+        python row_count_test.py
