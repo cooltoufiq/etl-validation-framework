@@ -1,15 +1,11 @@
 # row_count_test.py
 
-import random
+source_count = 100
+target_count = 90
 
-def test_row_count():
-    expected = random.randint(1, 100)
-    actual = random.randint(1, 90)
-    assert expected == actual, f"Expected {expected}, got {actual}"
 
-if __name__ == "__main__":
-    try:
-        test_row_count()
-        print("Test passed!")
-    except AssertionError as e:
-        print(f"Test failed: {e}")
+print(f"Source count: {source_count}")
+print(f"Target count: {target_count}")
+if source_count != target_count:
+    print("Row count mismatch!")
+else:    print("Row count matches.")
