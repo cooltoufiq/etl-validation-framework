@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Enquiries</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-tools{margin:16px 0}
+    table.enquiries{width:100%;border-collapse:collapse}
+    table.enquiries th, table.enquiries td{border:1px solid #ddd;padding:8px;text-align:left}
+    table.enquiries th{background:#f6f6f6}
+    .small{font-size:90%;color:#666}
+    .container{max-width:1000px;margin:16px auto;padding:0 16px}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="index.html">Click2hedge Admin</a>
+      <nav class="nav"><a href="index.html">Site</a></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Enquiries</h1>
+    <div class="admin-tools">
+      <button id="refresh">Refresh</button>
+      <button id="export">Export CSV</button>
+      <span class="small"> (shows server enquiries if `window.BACKEND_URL` is set; otherwise localStorage)</span>
+    </div>
+    <div id="status" class="small">Loading…</div>
+    <div id="table-wrap"></div>
+  </main>
+
+  <footer class="site-footer"><div class="container small">Admin view — demo only</div></footer>
+
+  <script>
+    const backend = window.BACKEND_URL || null;
+    async function fetchServer(){
+      try{
+        const resp = await fetch((backend||'').replace(/\/$/, '') + '/api/enquiries');
+        if(!resp.ok) throw new Error('Server returned '+resp.status);
+        const j = await resp.json();
+        if(j.ok) return j.enquiries;
+        throw new Error(j.message||'no data');
+      }catch(e){ console.warn('server fetch failed', e); return null; }
+    }
+
+    function fetchLocal(){
+      try{
+        const arr = JSON.parse(localStorage.getItem('click2hedge_enquiries')||'[]');
+        // normalize to server shape
+        return arr.map((it, idx)=>({
+          id: it.id||('local-'+(arr.length-idx)),
+          name: it.name||'', email: it.email||'', phone: it.phone||'', message: it.message||'', created_at: it.saved_at||it.created_at||''
+        }));
+      }catch(e){ console.warn('local fetch failed', e); return [] }
+    }
+
+    function renderTable(rows){
+      const wrap = document.getElementById('table-wrap');
+      if(!rows || rows.length===0){ wrap.innerHTML = '<p class="small">No enquiries found.</p>'; return; }
+      let html = '<table class="enquiries"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Created</th></tr></thead><tbody>';
+      for(const r of rows){
+        html += `<tr><td>${escapeHtml(String(r.id||''))}</td><td>${escapeHtml(r.name||'')}</td><td>${escapeHtml(r.email||'')}</td><td>${escapeHtml(r.phone||'')}</td><td>${escapeHtml(r.message||'')}</td><td>${escapeHtml(r.created_at||'')}</td></tr>`;
+      }
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+    }
+
+    function escapeHtml(s){ return String(s).replace(/[&<>\\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+    function exportCsv(rows){
+      if(!rows || rows.length===0) return alert('No rows to export');
+      const cols = ['id','name','email','phone','message','created_at'];
+      const csv = [cols.join(',')].concat(rows.map(r=>cols.map(c=>'"'+String((r[c]||'')).replace(/"/g,'""')+'"').join(','))).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'enquiries.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    async function load(){
+      document.getElementById('status').textContent = backend ? ('Querying '+backend) : 'Using localStorage';
+      let rows = null;
+      if(backend){ rows = await fetchServer(); }
+      if(rows===null) rows = fetchLocal();
+      renderTable(rows);
+      window._admin_rows = rows;
+      document.getElementById('status').textContent = 'Loaded '+(rows?rows.length:0)+' rows';
+    }
+
+    document.getElementById('refresh').addEventListener('click', ()=>load());
+    document.getElementById('export').addEventListener('click', ()=>exportCsv(window._admin_rows||[]));
+
+    load();
+  </script>
+</body>
+</html>

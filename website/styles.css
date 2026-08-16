@@ -1,0 +1,33 @@
+:root{--bg:#f7f9fb;--accent:#0b63d1;--muted:#666}
+*{box-sizing:border-box}
+body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:var(--bg);color:#222}
+.container{max-width:1000px;margin:0 auto;padding:24px}
+.site-header{background:#fff;border-bottom:1px solid #e6eef8}
+.site-header .container{display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:700;color:var(--accent);text-decoration:none}
+.nav a{margin-left:16px;color:var(--muted);text-decoration:none}
+.hero{padding:48px 0;background:linear-gradient(90deg,#ffffff,#eef7ff)}
+.hero h1{margin:0 0 8px;font-size:28px}
+.hero p{margin:0 0 16px;color:var(--muted)}
+.btn-primary{display:inline-block;background:var(--accent);color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none}
+.services .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px}
+.card{background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(10,30,80,0.06)}
+.modules .module{background:#fff;margin:12px 0;padding:12px;border-radius:6px}
+.about{margin-top:24px}
+.contact form{display:grid;gap:10px;max-width:560px}
+.contact input,.contact textarea{width:100%;padding:8px;border:1px solid #d6e3f8;border-radius:6px}
+.error-message{color:#b02a37;font-size:13px;margin-top:6px}
+.input-error{border-color:#b02a37 !important;box-shadow:0 0 0 3px rgba(176,42,55,0.05)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:2000}
+.modal{background:#fff;padding:20px;border-radius:8px;max-width:540px;width:90%;box-shadow:0 8px 30px rgba(10,30,80,0.15)}
+.modal h3{margin-top:0}
+.modal .close{background:transparent;border:none;color:var(--muted);font-size:16px;position:absolute;right:14px;top:10px}
+.otp-controls{display:flex;gap:8px;align-items:center;margin-top:6px}
+.otp-controls button{padding:6px 8px;border-radius:6px;border:1px solid #d6e3f8;background:#fff}
+.otp-input{width:120px;padding:6px;border:1px solid #d6e3f8;border-radius:6px}
+.otp-status{font-size:13px;color:var(--muted);margin-left:6px}
+.small{color:var(--muted)}
+.site-footer{padding:12px 0;text-align:center;color:var(--muted);font-size:14px}
+@media(max-width:600px){.site-header .container{padding:12px}.hero h1{font-size:22px}}
